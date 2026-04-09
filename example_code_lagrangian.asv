@@ -10,7 +10,7 @@ Nt = numel(mesh_time);
 delta = 0.2; % geodesic distance over which to compute deformation
 ct0 = 1; ctf = Nt; % time-interval of analysis 
 
-% % Visualize the velocity field 
+% Visualize the velocity field 
 for ct = 1:Nt
     xct = mesh_r{ct,1};
     yct = mesh_r{ct,2};
@@ -22,14 +22,13 @@ for ct = 1:Nt
 
     vMag = sqrt(v1ct.^2+v2ct.^2+v3ct.^2);
 
-    trisurf(mesh_F{ct},xct,yct,zct,vMag,'Edgecolor','none'); colorbar
-    hold on; quiver3(xct,yct,zct,v1ct,v2ct,v3ct,'k'); hold off
+    trisurf(mesh_F{ct},xct,yct,zct,vMag)
+    hold on; quiver3(xct,yct,zct,v1ct,v2ct,v3ct); hold off
     axis equal off
-    title(sprintf('v(x, t= %.1f) ',mesh_time(ct))...
+    title(sprintf('time t = %.1f',mesh_time(ct))...
         ,'FontSize',24,'Interpreter','latex')
-    shading interp
-    pause(0.2)
 end 
+
 % Splicing the dataset to corresponding dataset
 % Performs analysis from mesh_time(ct0) to mesh_time(ctf)
 mesh_F = mesh_F(ct0:ctf,1);
@@ -41,16 +40,16 @@ mesh_r = mesh_r(ct0:ctf,:);
 rt_arr = advect_for(mesh_F,mesh_time,mesh_v,mesh_r);
 
 % Compute the deformation
-mesh_r0 = cell2mat(mesh_r(1,:)); % Mesh at 
-mesh_rf = cell2mat(mesh_r(end,:)); % Final particle positions after advection
-mesh_F0 = cell2mat(mesh_F(1)); % Initial mesh faces
-mesh_Ff = cell2mat(mesh_F(end)); % Final mesh faces
-rf = cell2mat(rt_arr(end,:));
+mesh_r0 = cell2mat(mesh_r(ct0,:)); % Mesh at 
+mesh_rf = cell2mat(mesh_r(ctf,:)); % Final particle positions after advection
+mesh_F0 = cell2mat(mesh_F(ct0)); % Initial mesh faces
+mesh_Ff = cell2mat(mesh_F(ctf)); % Final mesh faces
+rf = cell2mat(rt_arr(ctf,:));
 
 % Compute the deformation metric
 [L2,L1,V0,Vf] = compute_deform(mesh_r0,mesh_rf,mesh_F0,mesh_Ff,rf,delta);
-FTLE = 0.5*L2./(mesh_time(end)-mesh_time(1));
-J = 0.5*(L1+L2)./(mesh_time(end)-mesh_time(1));
+FTLE = 0.5*L2./(mesh_time(ctf)-mesh_time(ct0));
+J = 0.5*(L1+L2)./(mesh_time(ctf)-mesh_time(ct0));
 aniso = L2-L1;
 
 %% Visualize the deformation metric
@@ -72,7 +71,7 @@ ax1.FontSize = fontSz;
 ax1.Color = bgColor;          % Axes background color
 ax1.XColor = 'w'; ax1.YColor = 'w'; ax1.ZColor = 'w'; % Axes text/ticks color
 camva(camAmp); shading interp; 
-t1 = title(sprintf('$$ {}_{iso}\\Lambda_{%.1f}^{%.1f }(\\mathbf{x}_0)$$',mesh_time(1),mesh_time(end)),...
+t1 = title(sprintf('$$ {}_{iso}\\Lambda_{%.1f}^{%.1f }(\\mathbf{x}_0)$$',mesh_time(ct0),mesh_time(ctf)),...
     'FontSize',fontSz,'Interpreter','latex'); 
 t1.Color = 'w'; % Make title text white
 view(cam_view)
@@ -87,7 +86,7 @@ ax2.FontSize = fontSz;
 ax2.Color = bgColor;
 ax2.XColor = 'w'; ax2.YColor = 'w'; ax2.ZColor = 'w';
 camva(camAmp); shading interp; 
-t2 = title(sprintf('$${}_{aniso}\\Lambda_{%.1f}^{%.1f }(\\mathbf{x}_0)$$',mesh_time(1),mesh_time(end)),...
+t2 = title(sprintf('$${}_{aniso}\\Lambda_{%.1f}^{%.1f }(\\mathbf{x}_0)$$',mesh_time(ct0),mesh_time(ctf)),...
     'FontSize',fontSz,'Interpreter','latex'); 
 t2.Color = 'w';
 view(cam_view)
@@ -109,7 +108,7 @@ ax3.Color = bgColor;
 ax3.XColor = 'w'; ax3.YColor = 'w'; ax3.ZColor = 'w';
 camva(camAmp); shading interp; 
 t3 = title(sprintf('$ \\Lambda_{%.1f}^{%.1f }(\\mathbf{x}_0), \\xi_{%.1f}^{%.1f }(\\mathbf{x}_0)$', ...
-    mesh_time(1), mesh_time(end), mesh_time(1), mesh_time(end)), ...
+    mesh_time(ct0), mesh_time(ctf), mesh_time(ct0), mesh_time(ctf)), ...
     'FontSize', fontSz, 'Interpreter', 'latex');
 t3.Color = 'w';
 view(cam_view)
