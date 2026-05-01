@@ -51,7 +51,7 @@ rf = cell2mat(rt_arr(end,:));
 [L2,L1,V0,Vf] = compute_deform(mesh_r0,mesh_rf,mesh_F0,mesh_Ff,rf,delta);
 FTLE = 0.5*L2./(mesh_time(end)-mesh_time(1));
 J = 0.5*(L1+L2)./(mesh_time(end)-mesh_time(1));
-aniso = L2-L1;
+aniso = 0.5*(L2-L1);
 
 %% Visualize the deformation metric
 close all; fontSz = 24; camAmp = 8; cam_view = [-33 1.7];

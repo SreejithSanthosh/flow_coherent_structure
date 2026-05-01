@@ -24,6 +24,9 @@ yf = squeeze(r_t(:,:,2,end));
 
 delta = 0.03; % The spatial averaging parameter 
 r0 = [x0(:),y0(:)]; rf = [xf(:),yf(:)];
+
+% Add noise to the advected tracks to demonstrate the robustness of the method
+% REMOVE THIS IN PRACTICE
 Anoise= 0.05;  % Add noise to the advected tracks
 rf = rf+Anoise*randn(size(rf));
 
