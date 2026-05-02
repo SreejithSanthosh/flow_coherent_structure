@@ -7,6 +7,12 @@ function [L2,L1,V0,Vf] = compute_deform(mesh_r0,mesh_rf,mesh_F0,mesh_Ff,rf,delta
 % rf: (Nq x 3) double array
 % delta : scalar double : spatial smoothing
 
+% This functions outputs the following deformation metrics:
+% L2 : (Nq x 1) double array : Largest eigenvalue of B'*B
+% L1 : (Nq x 1) double array : Smallest eigenvalue of B'*B
+% V0 : (Nq x 3) double array : Eigenvector corresponding to L2 at t0
+% Vf : (Nq x 3) double array : Eigenvector corresponding to L2 at tf
+
 r0 = mesh_r0; % Mesh at t0 provides init conditions for tracers
 G = meshToGraph(r0, mesh_F0); % Graph for finding nearby tracers
 
@@ -84,8 +90,8 @@ for i = 1:Nq
     eVf = B*eV0; V_largef = eVf(1,2)*zeta1_f+eVf(2,2)*zeta2_f;
     
     % Compute the L2 field
-    L2(i) = log(max(eiglist)); % L2 calculation
-    L1(i) = log(min(eiglist)); % lowest eigenval. calculation
+    L2(i) = max(eiglist); % L2 calculation
+    L1(i) = min(eiglist); % lowest eigenval. calculation
     V0(i,:) = V_large0; % Store the eigVec of largest eig val. at x0
     Vf(i,:) = V_largef; % Store the eigVec of largest eig val. at xf
 

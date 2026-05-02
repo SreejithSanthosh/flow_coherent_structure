@@ -1,7 +1,9 @@
-% This is constructed on 1/3/26
 function rt_arr = advect_for(mesh_F,mesh_time,mesh_v,mesh_r,r0)
-
-% Fill this out to check 
+% This function advects the particles forward in time using Heuns (RK2) method
+% mesh_F: cell array of size Nt x 1, each cell contains the face connectivity of the mesh at that time step
+% mesh_time: cell array of size Nt x 1
+% mesh_v: cell array of size Nt x 3, each cell contains the velocity field at that time step (v1,v2,v3)
+% mesh_r: cell array of size Nt x 3, each cell contains the particle positions at that time step (x,y,z)
 arguments
    mesh_F
    mesh_time
